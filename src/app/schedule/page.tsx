@@ -94,9 +94,11 @@ export default function SchedulePage() {
   }, [weekKey])
 
   const filledCount = TIME_SLOTS.filter((s) => slots[s.id] !== '').length
+  const isClosed = pageState === 'input' && responses.length >= 9
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isClosed) return
     const unanswered = TIME_SLOTS.filter((s) => slots[s.id] === '')
     if (unanswered.length > 0) {
       setError('すべての時間帯を選んでください')
@@ -289,6 +291,13 @@ export default function SchedulePage() {
                 🗑️ 回答を削除する
               </button>
             </div>
+          </div>
+        ) : isClosed ? (
+          /* 定員締め切りメッセージ */
+          <div className="bg-white rounded-2xl shadow p-6 text-center">
+            <div className="text-4xl mb-3">🔒</div>
+            <p className="font-bold text-gray-800 text-base mb-2">受付を締め切りました</p>
+            <p className="text-sm text-gray-500">定員に達したため、受付を締め切りました。</p>
           </div>
         ) : (
           /* 入力フォーム（新規 or 修正） */
