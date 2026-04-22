@@ -13,6 +13,7 @@ import sys
 import json
 import requests
 from datetime import datetime, timedelta
+from typing import Optional
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 
@@ -114,7 +115,7 @@ def build_schedule(responses: dict) -> dict:
     assigned: dict[str, list[str]] = {s: [] for s in TIME_SLOTS}
     scheduled: set[str] = set()  # 割り当て済みの人
 
-    def common_slot(names: list[str]) -> str | None:
+    def common_slot(names: list) -> Optional[str]:
         """複数人が全員○をつけている共通スロットを探す（空きがある枠のみ）"""
         for s in TIME_SLOTS:
             if len(assigned[s]) >= 2:
@@ -123,7 +124,7 @@ def build_schedule(responses: dict) -> dict:
                 return s
         return None
 
-    def solo_slot(name: str) -> str | None:
+    def solo_slot(name: str) -> Optional[str]:
         """1人分の○スロットを探す（空きがある枠のみ）"""
         for s in avail.get(name, []):
             if len(assigned[s]) < 2:
